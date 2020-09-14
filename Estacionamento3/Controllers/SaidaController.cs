@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Estacionamento3.Data;
 using Estacionamento3.Entities;
 using Estacionamento3.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,7 @@ namespace Estacionamento3.Controllers
 {
     [Route("api/Saida")]
     [ApiController]
+    [EnableCors("MyPolicy")]
     public class SaidaController : ControllerBase
     {
         EstacionamentoContext bd = new EstacionamentoContext();
