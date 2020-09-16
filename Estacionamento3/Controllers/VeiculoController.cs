@@ -10,15 +10,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Estacionamento3.Controllers
 {
-    // [RoutePrefix("api/books")]
-    [Route("api/Entrada")]
+    [Route("api/veiculo")]
     [ApiController]
-    public class EntradaController : ControllerBase
+    public class VeiculoController : ControllerBase
     {
         EstacionamentoContext bd = new EstacionamentoContext();
 
-        [HttpGet("VerificaPlaca/{placa}")]
-        public ActionResult<VerificaModel> Get(string placa)
+        [HttpGet("verificaPlaca/{placa}")]
+        public ActionResult<VerificaModel> VerificaPlaca(string placa)
         {
             var carro = new Veiculo();
 
@@ -30,9 +29,8 @@ namespace Estacionamento3.Controllers
             return Ok(query);
         }
 
-        [HttpPut("Adiciona/{placa}")]
-
-        public ActionResult<string> Put([FromBody] AdicionaModel request)
+        [HttpPut("adiciona/{placa}")]
+        public ActionResult<string> Adiciona([FromBody] AdicionaModel request)
         {
             var placa = request.placa;
 
@@ -57,35 +55,20 @@ namespace Estacionamento3.Controllers
             bd.Veiculos.Add(veiculo);
             bd.SaveChanges();
 
+
             return Ok("Veiculo Adicionado!");
         }
 
-        [HttpPut("DaEntrada/{Placa}")]
-
-        public ActionResult<string> Put(string placa)
+        [HttpGet("ativos")]
+        public List<AtivosModel> Ativos()
         {
-            var patio = new Patio();
-
-            var verificaAtivo =
+            var query =
                 (from p in bd.Patios
-                 where p.veiculoPlaca == placa && p.dataFim == null
-                 select p.dataFim).Any();
-            //.LastOrDefault();
+                 join v in bd.Veiculos on p.veiculoPlaca equals v.placa
+                 where p.dataFim == null
+                 select new AtivosModel { placa = v.placa, marca = v.marca, modelo = v.modelo, cor = v.cor, entrada = p.dataInicio }).ToList();
 
-            if(verificaAtivo)
-                return BadRequest("Veiculo  ja esta no patio!");
-
-            var dataAtual = DateTime.Now;
-
-            patio.dataInicio = dataAtual;
-            patio.veiculoPlaca = placa;
-
-            bd.Add(patio);
-            bd.SaveChanges();
-
-            return Ok("Veiculo adicionado ao Patio!");
-
+            return query;
         }
     }
 }
-

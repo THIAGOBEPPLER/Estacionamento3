@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,6 +8,7 @@ namespace Estacionamento3.Entities
 {
     public class Patio
     {
+        [Key]
         public int id { get; set; }
         public DateTime dataInicio { get; set; }
         public Nullable<DateTime> dataFim { get; set; }
